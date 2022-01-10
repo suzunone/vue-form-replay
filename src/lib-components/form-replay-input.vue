@@ -10,6 +10,10 @@
       {{timeFormat(currentTime)}}
     </component>
 
+    <component :is="totalTimeTagName" :class="totalTimeTagClass" :style="totalTimeTagStyle">
+      {{timeFormat(totalTime)}}
+    </component>
+
 
   </component>
 </template>

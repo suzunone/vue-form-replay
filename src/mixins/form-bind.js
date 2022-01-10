@@ -1,6 +1,6 @@
 export default {
   props: {
-    dataName: {
+    name: {
       type: String
     },
     dataClass: {
@@ -130,8 +130,8 @@ export default {
     if (this.dataClass) {
       this.formBind['class'] = this.dataClass;
     }
-    if (this.dataName) {
-      this.formBind['name'] = this.dataName;
+    if (this.name) {
+      this.formBind['name'] = this.name;
     }
     if (this.dataId) {
       this.formBind['id'] = this.dataId;

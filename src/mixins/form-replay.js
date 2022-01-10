@@ -99,8 +99,11 @@ export default {
   },
   methods: {
     timeFormat(time) {
+      if (time === undefined || !time) {
+        return '00:00';
+      }
       time = Math.round(time / 1000);
-      
+
       let hour = 0;
       if (time >= (60 * 60)) {
         hour = Math.floor(time / (60 * 60));

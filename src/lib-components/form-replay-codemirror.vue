@@ -1,18 +1,27 @@
 <template>
   <component :is="baseTagName" :class="baseTagClass" :style="baseTagStyle">
     <component :is="replayAreaParentTagName" :class="replayAreaParentTagClass" :style="replayAreaParentTagStyle">
-      <codemirror :options="formBind" v-model="textData"></codemirror>
+      <codemirror
+          v-model="textData"
+          :name="name"
+          :options="codemirrorOption"
+          :placeholder="placeholder"
+          :merge="merge"
+          :events="events"
+          :globalOptions="globalOptions"
+          :globalEvents="globalEvents"
+      ></codemirror>
     </component>
     <component :is="rangeParentTagName" :class="rangeParentTagClass" :style="rangeParentTagStyle">
       <input type="range" :class="dataRangeClass" :style="dataRangeStyle" v-model="pointer" min="0" :max="lastFlame">
     </component>
 
     <component :is="currentTimeTagName" :class="currentTimeTagClass" :style="currentTimeTagStyle">
-      {{timeFormat(currentTime)}}
+      {{ timeFormat(currentTime) }}
     </component>
 
     <component :is="totalTimeTagName" :class="totalTimeTagClass" :style="totalTimeTagStyle">
-      {{timeFormat(totalTime)}}
+      {{ timeFormat(totalTime) }}
     </component>
 
   </component>
@@ -23,11 +32,11 @@
 
 import FormReplayMixin from "@/mixins/form-replay";
 import CodeMirrorBindMixin from "@/mixins/codemirror-bind";
-import { codemirror } from 'vue-codemirror';
+import {codemirror} from 'vue-codemirror';
 
 export default {
   name: "form-replay-codemirror",
-  mixins:[FormReplayMixin, CodeMirrorBindMixin],
+  mixins: [FormReplayMixin, CodeMirrorBindMixin],
   components: {
     codemirror
   },

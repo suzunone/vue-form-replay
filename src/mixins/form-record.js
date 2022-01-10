@@ -17,20 +17,41 @@ export default {
     dataValue: {
       type: String
     },
+    useLocalStrage: {
+      type: [String, Boolean],
+      default: false
+    },
   },
   data() {
     return {
       textData: '',
       timer: null,
+      changeLog: {}
     };
   },
   methods: {
+    /**
+     * on submit event.
+     */
     onSubmit() {
+      clearInterval(this.timer);
       let date = new Date();
-      this.saveDB(date.getTime(), this.textData, this.textData);
+      this.saveChangeLog(date.getTime(), this.textData, this.textData);
       this.save();
+      localStorage.removeItem(this.replayName);
+      localStorage.removeItem(this.lastLogKey);
     },
 
+    /**
+     * on onUnload event.
+     */
+    onUnload() {
+      this.onSubmit();
+    },
+
+    /**
+     * Save log.
+     */
     save() {
       let data = this.getAll();
       if (this.saveEmitName) {
@@ -38,7 +59,17 @@ export default {
       }
     },
 
+    /**
+     * Get all logs.
+     * @returns {{}}
+     */
     getAll() {
+      if (!this.useLocalStrage) {
+        let changeLog = JSON.parse(JSON.stringify(this.changeLog));
+        this.changeLog = {};
+        return changeLog;
+      }
+
       let logKey = localStorage.getItem(this.replayName);
       let lastLogKey = localStorage.getItem(this.lastLogKey) * 1;
       if (!logKey) {
@@ -51,7 +82,7 @@ export default {
       logKey = logKey * 1;
 
       let res = {};
-      for (let i = lastLogKey + 1; i <= logKey; i++) {
+      for (let i = lastLogKey; i <= logKey; i++) {
         let staageKey = this.replayName + '-' + String(i);
         let logData = localStorage.getItem(staageKey);
         if (!logData) {
@@ -67,6 +98,27 @@ export default {
 
     },
 
+    /**
+     * save change log
+     * @param key
+     * @param newData
+     * @param oldData
+     */
+    saveChangeLog(key, newData, oldData) {
+      if (this.useLocalStrage) {
+        this.saveDB(key, newData, oldData);
+        return;
+      }
+
+      this.changeLog[key] = {'oldData': oldData, 'newData': newData,};
+    },
+
+    /**
+     * save in localStorage
+     * @param key
+     * @param newData
+     * @param oldData
+     */
     saveDB(key, newData, oldData) {
       let data = {'oldData': oldData, 'newData': newData,};
       let logKey = localStorage.getItem(this.replayName);
@@ -88,16 +140,20 @@ export default {
   watch: {
     textData(newData, oldData) {
       let date = new Date();
-      this.saveDB(date.getTime(), newData, oldData);
+      this.saveChangeLog(date.getTime(), newData, oldData);
       if (this.watcherEmitName) {
         this.$emit(this.watcherEmitName, newData, oldData);
       }
     }
   },
-
+  destroyed () {
+    window.removeEventListener("unload", this.onUnload);
+    clearInterval(this.timer);
+  },
   created() {
     let date = new Date();
-    this.saveDB(date.getTime(), '', '');
+    this.saveChangeLog(date.getTime(), '', '');
+    window.addEventListener("unload", this.onUnload);
   },
   mounted() {
     if (this.dataValue) {
