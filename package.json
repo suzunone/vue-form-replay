@@ -1,5 +1,5 @@
 {
-  "name": "vue-form-replay",
+  "name": "@suzunone/vue-form-replay",
   "version": "1.0.0",
   "description": "",
   "main": "dist/vue-form-replay.ssr.js",
@@ -8,7 +8,8 @@
   "unpkg": "dist/vue-form-replay.min.js",
   "files": [
     "dist/*",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "src/mixins/*"
   ],
   "sideEffects": false,
   "scripts": {
